@@ -1,0 +1,3 @@
+<?php
+namespace App\Application\MasterData;
+final readonly class BrandService { public function __construct(private BrandRepository $brands) {} public function list(): iterable { return $this->brands->all(); } public function create(array $data): void { $data['name']=trim($data['name']); if ($this->brands->nameExists($data['name'])) throw new \DomainException('Merk sudah digunakan.'); $this->brands->create($data); } public function update(int $id,array $data): void { $data['name']=trim($data['name']); if ($this->brands->nameExists($data['name'],$id)) throw new \DomainException('Merk sudah digunakan.'); $this->brands->update($id,$data); } }

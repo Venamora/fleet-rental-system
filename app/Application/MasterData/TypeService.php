@@ -1,0 +1,3 @@
+<?php
+namespace App\Application\MasterData;
+final readonly class TypeService { public function __construct(private TypeRepository $types) {} public function byBrand(int $brandId): iterable { return $this->types->byBrand($brandId); } public function create(array $data): void { $data['name']=trim($data['name']); if ($this->types->nameExists((int)$data['brand_id'],$data['name'])) throw new \DomainException('Tipe sudah digunakan pada merk tersebut.'); $this->types->create($data); } public function update(int $id,array $data): void { $data['name']=trim($data['name']); if ($this->types->nameExists((int)$data['brand_id'],$data['name'],$id)) throw new \DomainException('Tipe sudah digunakan pada merk tersebut.'); $this->types->update($id,$data); } }
