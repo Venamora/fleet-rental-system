@@ -181,7 +181,7 @@ The following remain open and must not be silently resolved by architecture sele
 - **Inputs read:** `AGENTS.md`; `PRD`; `docs/PRD.md`; `docs/DEVELOPMENT-WORKFLOW.md`; `docs/domain/fleet-rental-domain-semantics.md`; `prompts/02-architecture-options.md`; `README.md`; current repository/manifests inspection, including `.opencode/package.json`.
 - **Repository evidence:** Current manifests expose only `.opencode` tooling (`@opencode-ai/plugin`); no application manifests or app scripts exist. No runnable application commands exist in the current manifests. Existing repository documentation confirms implementation has not started and architecture remains deferred.
 - **Output path:** `docs/architecture/architecture-options.md`
-- **Changed paths:** `docs/architecture/architecture-options.md` and `docs/AI-USAGE.md` only.
+- **Changed paths:** `docs/architecture/architecture-options.md` and `docs/README.md` only.
 - **Evidence produced:** Option comparison, shared boundaries, persistence/concurrency implications, security/testing/accessibility/operations obligations, risk trade-offs, PRD/domain traceability, deferred questions, and non-binding Prompt-03 recommendation.
 - **Unresolved questions:** §10; no technical or business answer is invented.
 - **Gate decision:** **HOLD** pending parent review and explicit architecture decision.

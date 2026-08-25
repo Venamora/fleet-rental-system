@@ -62,7 +62,7 @@ Supplied final evidence: `composer test` passed with 24 tests/79 assertions afte
 
 - `README.md`
 - `docs/reviews/final-verification-handoff.md`
-- `docs/AI-USAGE.md`
+- `docs/README.md`
 
 No application code, configuration, tests, assets, architecture, or ADR files were changed in Prompt 10.
 

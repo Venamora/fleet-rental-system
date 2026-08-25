@@ -16,7 +16,7 @@
 - Test strategy and verification evidence → the project test configuration and `README.md`; verify using the repository’s actual scripts.
 - UI/UX tasks → the project UI/UX skill/documentation once created, then the affected UI code and tests.
 - Security or code-review tasks → the project security/review guidance once created, then inspect without changing scope.
-- AI-assisted work → preserve the required transparency in `README.md` and `docs/AI-USAGE.md` once created.
+- AI-assisted work → preserve the required transparency in `README.md` once created.
 
 ## Workflow constraints
 

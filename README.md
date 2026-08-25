@@ -1,44 +1,130 @@
 # Fleet & Rental System
 
-Internal Indonesian/WIB fleet and rental administration application.
+Aplikasi internal untuk mengelola unit kendaraan dan pemesanan sewa berbasis kalender WIB. Fitur utama mencakup master data merk/tipe, kendaraan, pelanggan, booking rental, validasi overlap, harga dalam USD cents, diskon otomatis, dan riwayat lifecycle.
 
-## Architecture
+## Menjalankan aplikasi
 
-The application is a Laravel modular monolith targeting PostgreSQL in production, with server-rendered Blade/Tailwind UI and Vite assets. The layers are deliberately separated: framework-free Domain value objects and rules; Application use cases, ports, query services, and transaction orchestration; Infrastructure Eloquent, database, clock, authentication, and transaction adapters; and Presentation controllers/routes/views. This keeps date, pricing, normalization, lifecycle, overlap, and no-partial-mutation rules testable without putting persistence decisions in controllers.
+### Prasyarat
 
-The bounded modules are Auth, Vehicles/Brand-Type, Customers, Rentals, Dashboard, and Lifecycle History. PostgreSQL is the production target configured by `.env.example`; the current runtime evidence reported SQLite, so PostgreSQL connectivity and PostgreSQL-specific concurrency/constraint behavior are not claimed here.
+- PHP 8.3 atau lebih baru
+- Composer
+- Node.js dan npm
+- PostgreSQL
 
-## Requirements and business rules
+### 1. Siapkan database dan environment
 
-Vehicle records use separate Brand and Type values, normalized unique plates, integer USD cents, optional year/color, archive/restore, derived status, search/filter/pagination, and no hard delete. Customers have normalized unique email/Indonesian mobile values, editable details, retention, and no delete/archive. Access is restricted to the seeded environment Admin identity; no public registration, password reset, customer login, or public API is provided.
+Buat database PostgreSQL, misalnya `fleet_rental`, lalu salin environment example:
 
-### Overlap logic
+```bash
+cp .env.example .env
+```
 
-Dates are inclusive WIB calendar dates. A requested rental overlaps an existing blocking rental for the same vehicle when `requested_start <= existing_effective_end AND requested_end >= existing_start`; therefore boundary-touching dates conflict. Booked and active rentals block, completed rentals do not block after their effective end, and availability preview is advisory while save-time validation repeats the rule inside the transaction boundary. Archived vehicles are not selectable for new rentals.
+Isi konfigurasi berikut di `.env` dengan kredensial PostgreSQL lokal Anda. Jangan commit file `.env`.
 
-### Pricing and lifecycle
+```env
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=fleet_rental
+DB_USERNAME=postgres_username
+DB_PASSWORD=postgres_password
 
-Duration is `(end - start) + 1`, so a same-day rental is one day. Daily rates and snapshots are integer cents. Rentals longer than seven days receive a 10% discount and the final cent amount uses half-up rounding; the stored snapshot is not rewritten by later vehicle-rate changes. Booked, active, completed, and cancelled lifecycle rules use the injected WIB clock, with lifecycle history and state-change guards. The exact inclusion semantics for `today_rental_total` and the reuse interpretation for cancellation before a booked start remain product decisions and are intentionally unresolved.
+ADMIN_USERNAME=admin@example.test
+ADMIN_PASSWORD=password_admin_anda
+```
 
-## Setup and usage
+### 2. Install dependency
 
-Prerequisites are PHP 8.3+, Composer, Node.js/npm, and a configured database. Production is intended for PostgreSQL; copy `.env.example` to `.env` through the deployment process, set a real `APP_KEY`, PostgreSQL connection values, and environment-only `ADMIN_USERNAME`/`ADMIN_PASSWORD`. Never commit, print, log, or render credentials or customer data. Local development may use the generated environment configuration, but production must set `APP_DEBUG=false`, use TLS, and set `SESSION_SECURE_COOKIE=true` with secure deployment/session settings.
+```bash
+composer install
+npm install
+```
 
-The actual Composer scripts are defined in `composer.json`: `composer setup`, `composer dev`, and `composer test`. The actual frontend scripts in `package.json` are `npm run build` and `npm run dev`. Inspect the manifests before using other commands. With `SESSION_DRIVER=database` and `CACHE_STORE=database`, run `php artisan migrate --seed` before opening the app: it creates application, `sessions`, and `cache` tables, then seeds the environment-configured Admin. Generate the application key with `php artisan key:generate`, create the public storage link with `php artisan storage:link`, then start `php artisan serve` and `npm run dev`. The root URL redirects to `/login`.
+### 3. Generate key dan siapkan database
 
-## Verification evidence
+```bash
+php artisan key:generate
+php artisan migrate --seed
+php artisan storage:link
+```
 
-The supplied final evidence records:
+`migrate --seed` membuat seluruh tabel aplikasi, termasuk tabel `sessions` dan `cache`, membuat Admin dari nilai environment, serta menyediakan master data awal:
 
-- `composer test` passed: 24 tests, 79 assertions, including config clear.
-- `composer validate --no-check-publish` passed.
-- `npm run build` passed with only the optional `fontaine` optimization warning.
-- `php artisan route:list` reported 24 routes.
-- `php artisan about` reported Laravel 13.26.1, PHP 8.5.1, timezone `Asia/Jakarta`, runtime database SQLite, session/cache database, and storage link not linked.
-- `git diff --check` passed.
+```text
+Toyota: Avanza, Innova
+Honda: Brio, CR-V, Civic
+```
 
-Migration execution, database connectivity, PostgreSQL concurrency, and PostgreSQL-specific constraint evidence are not claimed. Browser/manual accessibility evidence is also not claimed by the automated checks and remains a parent review item.
+Untuk mengulang database **lokal** dari awal:
 
-## Security and deployment requirements
+```bash
+php artisan migrate:fresh --seed
+```
 
-Use HTTPS/TLS in production, set `APP_DEBUG=false`, keep the seeded Admin credential only in deployment environment configuration, and do not expose secrets in UI, logs, documentation, or client output. Production session cookies must be secure, HTTP-only, and configured with an appropriate SameSite policy. Keep authentication and CSRF protection enabled for state changes, validate and authorize every mutation server-side, preserve customer confidentiality, and do not expose public account/API paths. PostgreSQL TLS mode and certificate/trust configuration must be selected and verified by deployment owners.
+> Perintah tersebut menghapus seluruh data database yang sedang dipakai. Jangan gunakan pada database production.
+
+### 4. Jalankan server
+
+Terminal pertama:
+
+```bash
+php artisan serve
+```
+
+Terminal kedua:
+
+```bash
+npm run dev
+```
+
+Aplikasi tersedia di `http://localhost:8000`. Root URL akan mengarahkan ke halaman login. Masuk menggunakan `ADMIN_USERNAME` dan `ADMIN_PASSWORD` dari `.env`.
+
+Vite digunakan untuk memproses asset Blade/Tailwind dan interaksi frontend seperti preview availability, dependent dropdown Merk → Tipe, serta rincian harga rental. Untuk build production:
+
+```bash
+npm run build
+```
+
+### 5. Menjalankan test
+
+```bash
+composer test
+composer validate --no-check-publish
+```
+
+## Arsitektur
+
+Saya memilih untuk mengguakan framework laravel modular monolith dengan PostgreSQL, Blade, Tailwind, dan Vite karena kebutuhan assessment berpusat pada workflow Admin internal, formulir, tabel, serta transaksi rental yang harus konsisten. Satu aplikasi server-rendered menjaga deployment tetap sederhana, sementara PostgreSQL mendukung transaction dan penguncian data kendaraan saat validasi booking dilakukan.
+
+Struktur kode mengikuti layer Domain, Application, Infrastructure, dan Presentation. Domain menyimpan aturan murni seperti normalisasi plat, tanggal inclusive, overlap, dan pricing; Application menangani use case serta transaction boundary; Infrastructure menangani Eloquent/PostgreSQL; Presentation berisi controller, route, Blade, dan validasi request. Pemisahan ini menjaga controller tidak menjadi tempat aturan bisnis dan membuat formula maupun rejection path mudah diuji.
+
+### Prinsip clean code dan trade-off
+
+Penulisan kode mengutamakan nama yang menjelaskan maksud, tanggung jawab class yang terfokus, dependency injection melalui contract, value object untuk aturan domain, serta controller yang tipis. Business rule utama ditempatkan di Domain atau Application, sedangkan detail Laravel, Eloquent, dan PostgreSQL dibatasi di Infrastructure dan Presentation. Test unit digunakan untuk aturan murni, sementara test feature/integration digunakan untuk memastikan transaction, persistence, dan rejection path berjalan sesuai requirement.
+
+Karena waktu assessment terbatas, implementasi ini memprioritaskan alur utama Admin dan correctness pada workflow rental dibanding refactoring menyeluruh. Beberapa area masih merupakan technical debt yang diketahui: sebagian contract masih menggunakan `mixed` atau array, business rule blocking rental perlu lebih tersentralisasi, error mapping ke field perlu diperjelas, dan coverage integration untuk seluruh lifecycle serta concurrency masih perlu diperluas. Trade-off ini didokumentasikan secara eksplisit agar batas antara clean-code intent dan pekerjaan lanjutan tetap jelas; penambahan fitur berikutnya sebaiknya tidak memperluas technical debt tersebut.
+
+## Logika overlap dan harga rental
+
+Tanggal rental memakai kalender WIB dan bersifat inclusive. Karena itu rental dari 26 sampai 27 Agustus dihitung sebagai dua hari: 26 dan 27 sama-sama termasuk periode sewa. Kendaraan yang sama ditolak bila rentang yang diminta memenuhi rumus berikut terhadap rental yang memblokir:
+
+```text
+requested_start <= existing_effective_end
+AND requested_end >= existing_start
+```
+
+Tanggal yang bertemu di boundary tetap dianggap overlap. Preview ketersediaan hanya membantu UI; validasi yang sama diulang saat simpan di dalam transaction, sehingga request yang dimanipulasi tetap ditolak. Rental booked dan active memblokir kendaraan; kendaraan archive tidak dapat dipilih untuk rental baru.
+
+Harga memakai integer USD cents. Durasi dihitung dengan `(end_date - start_date) + 1`; rental lebih dari 7 hari mendapatkan diskon 10%, dengan pembulatan half-up untuk hasil akhir. UI menampilkan rincian transparan: durasi, tarif harian, subtotal, diskon, dan total. Snapshot harga disimpan saat booking agar perubahan tarif kendaraan di masa depan tidak mengubah rental historis.
+
+## Penggunaan AI
+
+AI digunakan sebagai pair-programming assistant untuk membantu pembuatan backend Laravel, UI Blade/Tailwind, test, review, dan dokumentasi. Namun aturan bisnis tidak dibuat secara bebas oleh AI: alur kerja selalu dimulai dari [`AGENTS.md`](AGENTS.md), kemudian requirement utama dibaca dari [`docs/PRD.md`](docs/PRD.md).
+
+Setelah requirement dipahami, keputusan domain dan arsitektur dirujuk melalui [`docs/domain/`](docs/domain/), [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), serta [`docs/ADR/`](docs/ADR/). Saya tetap memeriksa hasil AI melalui test, review, migration, dan pengujian browser end-to-end.
+
+## Referensi penting
+
+- [`docs/PRD.md`](docs/PRD.md) — product requirement baseline
+- [`docs/domain/fleet-rental-domain-semantics.md`](docs/domain/fleet-rental-domain-semantics.md) — aturan domain
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — arsitektur dan batas layer

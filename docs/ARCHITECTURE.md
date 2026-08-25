@@ -42,6 +42,6 @@ No schema, exact DDL, routes, APIs, folder layout, commands, manifests, or deplo
 - **Inputs:** `AGENTS.md`, `PRD`, `docs/PRD.md`, `docs/DEVELOPMENT-WORKFLOW.md`, domain semantics, architecture options, Prompt 03, existing architecture/ADR/template docs, README, and repository manifest inspection.
 - **Outputs:** `docs/ARCHITECTURE.md` and six numbered ADRs under `docs/ADR/`.
 - **Evidence:** Decision, alternatives, dependency direction, rental transaction/concurrency approach, cross-cutting obligations, traceability, and deferred questions are recorded above and in ADR-001–006.
-- **Changed paths:** `docs/ARCHITECTURE.md`, `docs/ADR/001-modular-monolith.md`, `docs/ADR/002-layered-boundaries.md`, `docs/ADR/003-postgresql-concurrency.md`, `docs/ADR/004-blade-tailwind-ui.md`, `docs/ADR/005-admin-authentication.md`, `docs/ADR/006-testing-boundary.md`, `docs/AI-USAGE.md`.
+- **Changed paths:** `docs/ARCHITECTURE.md`, `docs/ADR/001-modular-monolith.md`, `docs/ADR/002-layered-boundaries.md`, `docs/ADR/003-postgresql-concurrency.md`, `docs/ADR/004-blade-tailwind-ui.md`, `docs/ADR/005-admin-authentication.md`, `docs/ADR/006-testing-boundary.md`, `docs/README.md`.
 - **Gate decision:** **HOLD** — parent must explicitly review and approve this architecture and each ADR. No implementation, Prompt 04, plan, schema, route, migration, or test work is authorized by this package.
 - **Approver / timestamp:** Parent/orchestrator / pending; package date 24 August 2026 (WIB).

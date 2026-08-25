@@ -8,8 +8,8 @@ This is the project’s gate contract. The approved PRD in `docs/PRD.md` is the 
 - Keep the layers below distinct. A later artifact may propose or implement only what an earlier approved artifact authorizes.
 - Every handoff records: input references, output path/content, owner, evidence, unresolved questions, and gate decision (`pass`, `hold`, or `escalate`).
 - A failed gate blocks downstream work. Escalate ambiguity, conflicting requirements, missing approval, or an untestable claim to the parent orchestrator; do not guess.
-- Every AI-assisted action must be logged in `docs/AI-USAGE.md` (prompt/task, files read or changed, result, human disposition). No unlogged AI output is evidence.
-- This bootstrap task writes workflow guidance only. It explicitly does **not** implement application code or architecture, create ADRs, schemas, routes, commands, or alter `docs/PRD.md` or `docs/AI-USAGE.md`.
+- Every AI-assisted action must be logged in `docs/README.md` (prompt/task, files read or changed, result, human disposition). No unlogged AI output is evidence.
+- This bootstrap task writes workflow guidance only. It explicitly does **not** implement application code or architecture, create ADRs, schemas, routes, commands, or alter `docs/PRD.md` or `docs/README.md`.
 
 ## Ordered phases and gates
 

@@ -142,7 +142,7 @@ The slices collectively target FR-AUTH-01–02, FR-VEH-01–06, FR-MASTER-01, FR
 - **Inputs read:** `AGENTS.md`; `PRD`; `docs/PRD.md`; `docs/DEVELOPMENT-WORKFLOW.md`; `docs/domain/fleet-rental-domain-semantics.md`; `docs/ARCHITECTURE.md`; `docs/ADR/001-modular-monolith.md` through `docs/ADR/006-testing-boundary.md`; `docs/architecture/architecture-options.md`; `prompts/04-implementation-and-test-plan.md`; `prompts/05-laravel-foundation.md`; `prompts/06-auth-and-master-data.md`; `prompts/07-rental-domain-and-persistence.md`; `prompts/08-admin-ui.md`; `README.md`; current manifest/repository inspection including `.opencode/package.json`.
 - **Parent inputs:** Parent-selected and approved Laravel + PostgreSQL + Blade/Tailwind architecture; parent-supplied Laravel 13 official-doc research summary; request for Prompt 05 foundation after plan approval.
 - **Output:** `docs/plans/implementation-and-test-plan.md`
-- **Changed paths:** `docs/plans/implementation-and-test-plan.md` (created); `docs/AI-USAGE.md` (appended).
+- **Changed paths:** `docs/plans/implementation-and-test-plan.md` (created); `docs/README.md` (appended).
 - **Evidence:** Ordered Prompt 05–08 slices, layered boundary map, anticipated planned paths, dependencies, risks, rollback, security/privacy, command-discovery policy, detailed test matrix, named edge cases, traceability, assumptions, and deferred questions.
 - **Unresolved questions:** §7; no answers invented.
 - **Gate decision:** **HOLD** pending explicit parent approval of this plan and test matrix.

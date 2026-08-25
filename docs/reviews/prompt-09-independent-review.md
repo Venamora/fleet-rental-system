@@ -17,7 +17,7 @@ Inputs reviewed:
 - `docs/domain/fleet-rental-domain-semantics.md`
 - `docs/ARCHITECTURE.md` and `docs/ADR/001-modular-monolith.md` through `docs/ADR/006-testing-boundary.md`
 - `docs/plans/implementation-and-test-plan.md`
-- Prompt 06–08 implementation and verification entries in `docs/AI-USAGE.md`
+- Prompt 06–08 implementation and verification entries in `docs/README.md`
 - Parent-supplied findings and evidence from the independent reviewer, security reviewer, and test reviewer
 
 ## Reviewer roles
@@ -203,6 +203,6 @@ The parent authorized backend/test/security repair set was applied without editi
 - **Evidence:** Findings C-01–C-02, H-01–H-08, T-01–T-04, and M-01–M-04 with severity, requirement references, reproduction/evidence, minimal recommended fixes, status, constraints, and explicit product escalations.
 - **Open questions:** `today_rental_total` inclusion semantics and booked-cancellation-before-start reuse require parent/product decisions; PostgreSQL and production-hardening evidence remain outstanding.
 - **Gate decision:** **HOLD** — authorized repair applied; excluded product decisions and PostgreSQL/environment evidence remain pending parent disposition.
-- **Changed paths:** `docs/reviews/prompt-09-independent-review.md`, `docs/AI-USAGE.md`
+- **Changed paths:** `docs/reviews/prompt-09-independent-review.md`, `docs/README.md`
 - **Verification:** Focused and full test commands, Composer validation, route listing, PHP lint, and diff check are recorded in the AI log; migration status was attempted safely but could not run because the configured SQLite file was absent.
 - **Approver / timestamp:** Parent/orchestrator / pending; 24 August 2026 (WIB)
